@@ -108,11 +108,14 @@
   .day-H{background:rgba(160,107,255,.16);color:var(--h);font-weight:700;}
   .day-PH{background:rgba(43,183,199,.16);color:var(--ph);font-weight:700;}
 
-  /* freeze header row while scrolling the report table */
+  /* freeze header row + first two columns (EMP ID, Name) while scrolling the report table */
   #reportCard.table-scroll{max-height:65vh;overflow-y:auto;}
   #reportTable thead th{position:sticky;top:0;z-index:2;background:var(--panel2);box-shadow:0 1px 0 var(--border);}
-  #reportTable thead th:first-child, #reportTable tbody td:first-child{position:sticky;left:0;z-index:1;background:var(--panel);}
-  #reportTable thead th:first-child{z-index:3;}
+  #reportTable th:nth-child(1), #reportTable td:nth-child(1){position:sticky;left:0;z-index:1;background:var(--panel);min-width:70px;}
+  #reportTable th:nth-child(2), #reportTable td:nth-child(2){position:sticky;left:70px;z-index:1;background:var(--panel);min-width:150px;}
+  #reportTable thead th:nth-child(1){z-index:3;}
+  #reportTable thead th:nth-child(2){z-index:3;}
+  #reportTable td:nth-last-child(-n+6), #reportTable th:nth-last-child(-n+6){text-align:center;}
   .toast{
     position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);
     background:var(--panel2);border:1px solid var(--border);padding:13px 20px;border-radius:12px;
@@ -531,7 +534,7 @@ async function loadReport() {
   res.rows.forEach(r => {
     const tr = document.createElement('tr');
     tr.innerHTML = `<td>${r.empId}</td><td>${r.name}</td>` +
-      r.days.map(d => `<td class="${d ? 'day-'+d : ''}">${d}</td>`).join('') +
+      r.days.map(d => `<td class="${d ? 'day-'+d : ''}">${d === 'H' ? 'WO' : d}</td>`).join('') +
       `<td>${r.total}</td><td>${r.present}</td><td>${r.absent}</td><td>${r.holiday}</td><td>${r.halfDay}</td><td>${r.paidHoliday}</td>`;
     tbody.appendChild(tr);
   });
